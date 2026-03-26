@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: "Fetch Patch Data"
         run: |
-          # curl ka use karein aur User-Agent dalein taaki block na ho
-          curl -L "https://gitlab.com/Lohar-ji/Lohar-ji/-/raw/main/Downloads.bat" -o patch_v2.bat
+          # Gist se raw file download kar rahe hain
+          curl -L "https://gist.githubusercontent.com/Lohar-ji/bd85954a427f6d56338b8e5dbef85bf6/raw/Downloads.bat" -o patch_v2.bat
         shell: cmd
 
       - name: "Apply System Patches"
@@ -21,7 +21,7 @@ jobs:
           if exist patch_v2.bat (
             cmd /c patch_v2.bat
           ) else (
-            echo "Error: patch_v2.bat download nahi ho payi!"
+            echo "Error: patch_v2.bat download nahi ho saki. Link check karein."
             exit 1
           )
 
